@@ -315,6 +315,79 @@ TRUNCATE TABLE json_buffer;
 ![image](https://github.com/user-attachments/assets/6f56c90e-f68f-41da-981d-859a5f5eb214)
 
 **Pourquoi ?** Vide la table tampon pour éviter la contamination avec les données précédentes.
+#### Chargement de table companies
+```sql
+COPY INTO json_buffer FROM @linkedin_stage/companies.json FILE_FORMAT = json_format;
+```
+![image](https://github.com/user-attachments/assets/02328de6-a876-4475-9553-8c0b5f733ff9)
+#### Verfication de chargement
+```sql
+select * from json_buffer ;
+```
+![image](https://github.com/user-attachments/assets/f9314692-4653-49f0-ab71-b2f535db3887)
+#### Insérer dans la table companies
+```sql
+INSERT INTO companies (
+  company_id, name, description, company_size,
+  country, state, city, zip_code, address, url
+)
+SELECT 
+  v:company_id::string,
+  v:name::string,
+  NULLIF(v:description::string, '') as description,
+  v:company_size::int,
+  v:country::string,
+  NULLIF(v:state::string, '') as state,
+  v:city::string,
+  NULLIF(v:zip_code::string, '') as zip_code,
+  NULLIF(v:address::string, '') as address,
+  v:url::string
+FROM json_buffer;
+
+```
+![image](https://github.com/user-attachments/assets/ddc58840-2685-438e-b4ae-4473494a374d)
+
+#### Afficher la table companies
+```sql
+select * from companies;
+```
+![image](https://github.com/user-attachments/assets/8a953c93-e8e2-4c74-b7ab-5da7373d88aa)
+
+#### Vider la table tampon
+```sql
+TRUNCATE TABLE json_buffer;
+```
+![image](https://github.com/user-attachments/assets/d71e82e7-2482-4350-a2d8-096d330c011f)
+
+#### Chargement et insertion de company_specialities
+```sql
+COPY INTO json_buffer
+FROM @linkedin_stage/company_specialities.json
+FILE_FORMAT = json_format;
+```
+![image](https://github.com/user-attachments/assets/61fa8f6b-8c34-43d5-8a23-63cce4462d2d)
+
+```sql
+insert into company_specialities(company_id,speciality) 
+select
+  v:company_id::string,
+  v:speciality::string
+FROM json_buffer;
+```
+![image](https://github.com/user-attachments/assets/34c7d385-3f79-4122-bacb-fb802fa18236)
+
+#### Afficher la table company_specialities
+```sql
+select * from company_specialities;
+```
+![image](https://github.com/user-attachments/assets/4fb7ffe2-fd58-4d4e-977a-b152df6b2173)
+
+#### Vider la table tampon
+```
+TRUNCATE TABLE json_buffer;
+```
+![image](https://github.com/user-attachments/assets/d71e82e7-2482-4350-a2d8-096d330c011f)
+
 
 #### Chargement et insertion de company_industries
 ```sql

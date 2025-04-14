@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/da2a5692-641c-4f33-9d53-b1c3b6ec7c8c)# LinkedIn Snowflake Project
+# LinkedIn Snowflake Project
 
 ## Introduction
 Ce projet vise à modéliser et charger une base de données LinkedIn dans Snowflake. Il exploite des fichiers CSV et JSON stockés dans un bucket S3 public. L’objectif est d’obtenir une base de données relationnelle robuste permettant l'analyse des offres d’emploi, des entreprises, des salaires, des compétences, et des industries.
